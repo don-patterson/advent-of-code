@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "advent-of-code"
+version = "0.1.0"
+description = "virtualenv for aoc 2021"
+authors = ["Don Patterson"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+black = "^21.11b1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
