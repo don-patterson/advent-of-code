@@ -1,6 +1,6 @@
 from aoc_common import load_ints
 
-input = load_ints("input-01-1")
+input = load_ints("input-01.txt")
 
 # part 1
 [prev, *remaining] = input
