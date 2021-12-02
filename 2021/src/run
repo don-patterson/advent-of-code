@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+[ "$1" ] || set -- $(ls day*.py|tail -n1)
+[ "$1" = "all" ] && set -- $(ls day*.py)
+
+for day in "$@"; do
+  echo "$day"
+  poetry run python "$day"
+done

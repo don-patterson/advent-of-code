@@ -1,22 +1,17 @@
-from aoc_common import load_lines
+from aoc import lines
 from collections import Counter
-
-input = load_lines("input-02.txt")
 
 # part 1
 counts = Counter()
-for line in input:
-    direction, distance = line.split()
+for direction, distance in lines("input-02.txt", shape=[str, int]):
     counts[direction] += int(distance)
 
 print("1:", counts["forward"] * (counts["down"] - counts["up"]))
 
+
 # part 2
 counts = Counter()
-for line in input:
-    direction, distance = line.split()
-    distance = int(distance)
-
+for direction, distance in lines("input-02.txt", shape=[str, int]):
     if direction == "up":
         counts["aim"] -= distance
     elif direction == "down":
