@@ -1,25 +1,11 @@
 from aoc import lines
 
-normal_segments = [
-    "abcefg",
-    "cf",  # 1
-    "acdeg",
-    "acdfg",
-    "bcdf",  # 4
-    "abdfg",
-    "abdefg",
-    "acf",  # 7
-    "abcdefg",  # 8
-    "abcdfg",
-]
-
-
 entries = []
 for line in lines("input-08.txt"):
     [*digits, _, a, b, c, d] = line.split()
     entries.append({"in": digits, "out": [a, b, c, d]})
 
-unique = {len(normal_segments[i]) for i in [1, 4, 7, 8]}
+unique = {2, 3, 4, 7}
 
 print(
     "1:",
@@ -28,13 +14,6 @@ print(
 
 
 # part 2....
-def digit(unscrambled_segment):
-    for i, segment in enumerate(normal_segments):
-        if unscrambled_segment == segment:
-            return i
-    raise Exception("uh oh")
-
-
 def find_by_length(length, entry):
     for segment in entry["in"]:
         if len(segment) == length:
