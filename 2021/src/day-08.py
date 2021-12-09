@@ -76,3 +76,44 @@ for entry in entries:
 
 
 print("2:", sum(outputs))
+
+
+# part 2 alternate
+from itertools import permutations
+
+# all possible mappings
+lights = "abcdefg"
+valid_wires = [
+    "abcefg",
+    "cf",
+    "acdeg",
+    "acdfg",
+    "bcdf",
+    "abdfg",
+    "abdefg",
+    "acf",
+    "abcdefg",
+    "abcdfg",
+]
+
+
+def light_to_wire(lights, mapping):
+    return "".join(sorted(mapping[light] for light in lights))
+
+
+def find_mappings(entry):
+    for wires in permutations(lights):
+        mapping = dict(zip(lights, wires))
+        if all(light_to_wire(e, mapping) in valid_wires for e in entry):
+            yield mapping
+
+
+total = 0
+for entry in entries:
+    [mapping] = find_mappings(entry["in"])
+    output = "".join(
+        str(valid_wires.index(light_to_wire(o, mapping))) for o in entry["out"]
+    )
+    total += int(output)
+
+print("2a:", total)
