@@ -3,8 +3,8 @@ from itertools import product
 
 grid = {}
 for y, row in enumerate(lines("input-11.txt")):
-    for x, height in enumerate(row):
-        grid[(x, y)] = int(height)
+    for x, value in enumerate(row):
+        grid[(x, y)] = int(value)
 
 near = set(product((-1, 0, 1), repeat=2)) - {(0, 0)}
 
