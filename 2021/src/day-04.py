@@ -1,9 +1,11 @@
-from aoc import lines
+def input():
+    with open("input-04.txt") as text:
+        yield from text
 
 
-def take(n, input):
+def take(n, iterator):
     for _ in range(n):
-        yield next(input)
+        yield next(iterator)
 
 
 class Entry:
@@ -46,13 +48,13 @@ class Card:
 
 
 # part 1
-input = lines("input-04.txt")
-numbers = [int(i) for i in next(input).split(",")]
+lines = input()
+numbers = [int(i) for i in next(lines).split(",")]
 cards = []
 
-for row in input:
+for row in lines:
     if row:  # then there should be 4 more
-        cards.append(Card(row, *take(4, input)))
+        cards.append(Card(row, *take(4, lines)))
 
 first_score = None
 last_score = None

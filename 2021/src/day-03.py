@@ -1,9 +1,14 @@
-from aoc import lines
 from collections import Counter, defaultdict
+
+
+def input():
+    with open("input-03.txt") as text:
+        yield from text
+
 
 # part 1
 bitcount = defaultdict(Counter)
-for bits in lines("input-03.txt"):
+for bits in input():
     for position, bit in enumerate(reversed(bits)):
         bitcount[position][bit] += 1
 
@@ -25,7 +30,7 @@ def partition(bitstrings, position):
     return buckets
 
 
-common = lines("input-03.txt")
+common = input()
 position = 0
 while True:
     buckets = partition(common, position)
@@ -37,7 +42,7 @@ while True:
         break
     position += 1
 
-rare = lines("input-03.txt")
+rare = input()
 position = 0
 while True:
     buckets = partition(rare, position)

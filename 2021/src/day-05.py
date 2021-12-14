@@ -1,5 +1,11 @@
 from collections import Counter
-from aoc import lines
+
+
+def input():
+    with open("input-05.txt") as text:
+        for line in text:
+            p1, _, p2 = line.split()
+            yield p1, p2
 
 
 def int_range(a, b):
@@ -34,7 +40,7 @@ class Point:
 
 flats = Counter()
 diagonals = Counter()
-for p1, _, p2 in lines("input-05.txt", shape=[str, str, str]):
+for p1, p2 in input():
     start = Point(*[int(i) for i in p1.split(",")])
     end = Point(*[int(i) for i in p2.split(",")])
     for point in start.flat_coordinates(end):

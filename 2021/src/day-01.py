@@ -1,11 +1,15 @@
-from aoc import lines
+def input():
+    with open("input-01.txt") as text:
+        for line in text:
+            yield int(line)
+
 
 # part 1
-input = lines("input-01.txt", shape=int)
-a = next(input)
+numbers = input()
+a = next(numbers)
 increase_count = 0
 
-for b in input:
+for b in numbers:
     if a < b:
         increase_count += 1
     a = b
@@ -14,11 +18,11 @@ print("1:", increase_count)
 
 
 # part 2
-input = lines("input-01.txt", shape=int)
-a, b, c = next(input), next(input), next(input)
+numbers = input()
+a, b, c = next(numbers), next(numbers), next(numbers)
 increase_count = 0
 
-for d in input:
+for d in numbers:
     if a < d:
         increase_count += 1
     a, b, c = b, c, d

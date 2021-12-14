@@ -2,6 +2,7 @@
 [ "$1" ] || set -- $(ls day*.py|tail -n1)
 [ "$1" = "all" ] && set -- $(ls day*.py)
 
+set -e
 for day in "$@"; do
   echo "$day"
   poetry run python "$day"
