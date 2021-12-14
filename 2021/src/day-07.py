@@ -1,7 +1,11 @@
-from aoc import lines
+def input():
+    with open("input-07.txt") as lines:
+        for line in lines:
+            yield line.strip()
+
 
 positions = []
-for line in lines("input-07.txt"):
+for line in input():
     positions.extend(int(i) for i in line.split(","))
 
 start, end = min(positions), max(positions)

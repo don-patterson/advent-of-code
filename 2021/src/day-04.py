@@ -1,6 +1,7 @@
 def input():
-    with open("input-04.txt") as text:
-        yield from text
+    with open("input-04.txt") as lines:
+        for line in lines:
+            yield line.strip()
 
 
 def take(n, iterator):

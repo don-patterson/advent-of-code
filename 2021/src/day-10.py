@@ -1,4 +1,8 @@
-from aoc import lines
+def input():
+    with open("input-10.txt") as lines:
+        for line in lines:
+            yield line.strip()
+
 
 closing = {
     ")": {"score": 3, "closes": "("},
@@ -21,7 +25,7 @@ def error_score(instruction):  # return score, [still_open...]
     return 0, stack
 
 
-print("1:", sum(error_score(line)[0] for line in lines("input-10.txt")))
+print("1:", sum(error_score(line)[0] for line in input()))
 
 
 def close_score(stack):
@@ -33,7 +37,7 @@ def close_score(stack):
 
 closing_scores = []
 
-for line in lines("input-10.txt"):
+for line in input():
     e, stack = error_score(line)
     if e > 0:
         continue

@@ -1,7 +1,11 @@
-from aoc import lines
+def input():
+    with open("input-08.txt") as lines:
+        for line in lines:
+            yield line.strip()
+
 
 entries = []
-for line in lines("input-08.txt"):
+for line in input():
     [*digits, _, a, b, c, d] = line.split()
     entries.append({"in": digits, "out": [a, b, c, d]})
 

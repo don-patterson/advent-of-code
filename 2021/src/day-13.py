@@ -1,16 +1,20 @@
-from aoc import lines
+def input():
+    with open("input-13.txt") as lines:
+        for line in lines:
+            yield line.strip()
 
-input = lines("input-13.txt")
+
+lines = input()
 points = set()
 folds = []
 
-for line in input:
+for line in lines:
     if not line:
         break
     x, y = line.split(",")
     points.add((int(x), int(y)))
 
-for line in input:
+for line in lines:
     direction, value = line.split("=")
     folds.append({direction[-1]: int(value)})
 

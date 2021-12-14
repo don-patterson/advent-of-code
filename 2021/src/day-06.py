@@ -1,8 +1,14 @@
 from collections import Counter
-from aoc import lines
+
+
+def input():
+    with open("input-06.txt") as lines:
+        for line in lines:
+            yield line.strip()
+
 
 fish = Counter()
-for line in lines("input-06.txt"):
+for line in input():
     for i in line.split(","):
         fish[int(i)] += 1
 

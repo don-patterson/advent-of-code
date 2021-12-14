@@ -1,6 +1,10 @@
-from aoc import lines
+def input():
+    with open("input-12.txt") as lines:
+        for line in lines:
+            yield line.strip()
 
-edges = {tuple(line.split("-")) for line in lines("input-12.txt")}
+
+edges = {tuple(line.split("-")) for line in input()}
 edges |= {(b, a) for a, b in edges}
 
 if any(a.isupper() and b.isupper() for a, b in edges):

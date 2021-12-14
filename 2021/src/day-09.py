@@ -1,8 +1,14 @@
-from aoc import lines
 from itertools import product
 
+
+def input():
+    with open("input-09.txt") as lines:
+        for line in lines:
+            yield line.strip()
+
+
 grid = {}
-for y, row in enumerate(lines("input-09.txt")):
+for y, row in enumerate(input()):
     for x, height in enumerate(row):
         grid[(x, y)] = int(height)
 
