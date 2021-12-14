@@ -9,14 +9,14 @@ def input():
 
 
 lines = input()
-sequence = [a + b for a, b in pairwise(next(lines))]
+sequence = "_" + next(lines) + "_"  # pad the ends to help counting
 next(lines)  # blank
 insertions = {}
 for line in lines:
     pair, c = line.split(" -> ")
     insertions[pair] = c
 
-pairs = Counter(sequence)
+pairs = Counter(a + b for a, b in pairwise(sequence))
 
 
 def step(current):
@@ -32,12 +32,12 @@ def step(current):
 
 
 def count(pairs):
-    # the leftmost and rightmost characters in the sequence are not double counted,
-    # and all others are..so I got lucky that the most/least common were double counted
+    # all characters are double counted execept the "_"s at the ends
     c = Counter()
     for pair, count in pairs.items():
         c[pair[0]] += count
         c[pair[1]] += count
+    del c["_"]  # just used as padding
     [most, *_, least] = c.most_common()
     return (most[1] - least[1]) // 2
 
