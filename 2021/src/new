@@ -1,0 +1,18 @@
+#!/bin/bash
+day=$(date +%d)
+txt="input-$day.txt"
+src="day-$day.py"
+
+[ -e "$txt" -o -e "$src" ] && {
+  echo "already got files for today!"
+  exit
+}
+
+touch "$txt" "$src"
+
+cat - >"$src" <<EOF
+def input():
+    with open("$txt") as lines:
+        for line in lines:
+            yield line.strip()
+EOF
