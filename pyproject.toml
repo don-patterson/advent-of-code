@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "advent-of-code"
 version = "0.1.0"
-description = "virtualenv for aoc 2021"
+description = "virtualenv for aoc"
 authors = ["Don Patterson"]
 license = "MIT"
 
