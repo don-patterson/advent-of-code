@@ -1,83 +1,81 @@
-def input():
-    with open("input-15.txt") as lines:
-        for line in lines:
-            yield line.strip()
+from bisect import insort
 
 
-grid = {}
-for y, row in enumerate(input()):
-    for x, risk in enumerate(row):
-        grid[(x, y)] = int(risk)
+with open("input-15.txt") as f:
+    input = f.read().splitlines()
 
+
+risk = {(x, y): int(v) for y, row in enumerate(input) for x, v in enumerate(row)}
 start = (0, 0)
-end = (x, y)
+end = (99, 99)
 
 
-def neighbors(x, y):
-    return {(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)}
+def neighbors(point, max=99):
+    x, y = point
+    if x < max:
+        yield x + 1, y
+    if x > 0:
+        yield x - 1, y
+    if y < max:
+        yield x, y + 1
+    if y > 0:
+        yield x, y - 1
 
 
-def neighborhood(exploring, unexplored):
-    done = set()
-    candidate_paths = []
-
-    for origin in exploring:
-        destinations = neighbors(*origin) & unexplored
-        if not destinations:  # this point is fully explored, don't search it again
-            done.add(origin)
-            continue
-        for dest in destinations:
-            candidate_paths.append((origin, dest))
-    return done, candidate_paths
+path_risk = {point: 999999 for point in risk}
+exploring = [(start, 0)]
 
 
-costs = {start: 0}
-exploring = {start}
-unexplored = set(grid.keys())
+def update_path_risk(point, current_risk):
+    if (new_risk := current_risk + risk[point]) < path_risk[point]:
+        path_risk[point] = new_risk
+        insort(exploring, (point, new_risk), key=lambda v: -v[1])
 
 
-def cost(candidate_path):
-    origin, dest = candidate_path
-    return costs[origin] + grid[dest]
+def explore(point, current_risk):
+    for neighbor in neighbors(point):
+        update_path_risk(neighbor, current_risk)
 
 
-# while end not in costs:
-#     stop_exploring, start_exploring = neighborhood(exploring, unexplored)
-#     exploring -= stop_exploring
-#     path = min(start_exploring, key=cost)
-#     exploring.add(path[1])
-#     unexplored.remove(path[1])
-#     costs[path[1]] = cost(path)
-# print("1:", costs[end])
+point = None
+while point != end:
+    point, current_risk = exploring.pop()
+    explore(point, current_risk)
 
-# part2...holy shit, can I possibly use the same technique?
+print("1:", path_risk[end])
+
+
+# part 2 copy pasta...could have made this a little cleaner/reusable
+# but at least now it runs fast
 end = (499, 499)
 
 
-def get(x, y):
+def risk2(point):
+    x, y = point
     boost_x, x = divmod(x, 100)
     boost_y, y = divmod(y, 100)
-    val = boost_x + boost_y + grid[(x, y)]
+    val = boost_x + boost_y + risk[(x, y)]
     return (val - 1) % 9 + 1
 
 
-def cost(candidate_path):
-    origin, dest = candidate_path
-    return costs[origin] + get(*dest)
+path_risk = {(x, y): 999999 for x in range(500) for y in range(500)}
+exploring = [(start, 0)]
 
 
-unexplored = set((x, y) for x in range(500) for y in range(500))  # cringe
+def update_path_risk(point, current_risk):
+    if (new_risk := current_risk + risk2(point)) < path_risk[point]:
+        path_risk[point] = new_risk
+        insort(exploring, (point, new_risk), key=lambda v: -v[1])
 
-i = 0
-while end not in costs:
-    stop_exploring, start_exploring = neighborhood(exploring, unexplored)
-    exploring -= stop_exploring
-    path = min(start_exploring, key=cost)
-    exploring.add(path[1])
-    unexplored.remove(path[1])
-    costs[path[1]] = cost(path)
 
-    i += 1
-    if not i % 1000:
-        print("--", i, "--")
-print("2:", costs[end])
+def explore(point, current_risk):
+    for neighbor in neighbors(point, max=499):
+        update_path_risk(neighbor, current_risk)
+
+
+point = None
+while point != end:
+    point, current_risk = exploring.pop()
+    explore(point, current_risk)
+
+print("2:", path_risk[end])

@@ -7,10 +7,26 @@ function goto_year {
   cd "$1"
 }
 
-goto_year
-latest_file=$(ls *.py|tail -n1)
-echo "$latest_file:"
-poetry run python "$latest_file"
+function get_file {
+  [ "$1" ] || set -- ".."
+  ls *.py | grep "day-$1\.py"| tail -n1
+}
+
+
+case "$1%$2" in
+        %) goto_year;      f=$(get_file)      ;;
+      ??%) goto_year;      f=$(get_file "$1") ;;
+    20??%) goto_year "$1"; f=$(get_file)      ;;
+  20??%??) goto_year "$1"; f=$(get_file "$2") ;;
+        *)
+           echo >&2 "uh oh...got [$1 $2]"
+           exit 1
+        ;;
+esac
+
+
+echo "$f"
+poetry run python "$f"
 
 
 # got a bunch of ideas here, and I'm not sure which are good.
