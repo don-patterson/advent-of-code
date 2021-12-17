@@ -1,15 +1,24 @@
 from math import prod
+from itertools import islice
 
-with open("input-16.txt") as f:
-    input = f.read().strip()
+_glob = {"sum": 0}
+
+
+def input():
+    with open("input-16.txt") as f:
+        while (c := f.read(1)) not in ("", "\n"):
+            yield from f"{int(c, 16):04b}"
+
+
+def read(bitstream, n):
+    return "".join(islice(bitstream, n))
 
 
 class Packet:
     def __init__(self, version, type):
+        _glob["sum"] += int(version, 2)
         self.version = version
         self.type = type
-
-        # probably could make Literal and Operator subclasses...oh well
         self.children = []
         self.literal = None
 
@@ -40,94 +49,40 @@ class Packet:
     def value(self):
         return self.op([c.value for c in self.children])
 
-    def traverse(self):
-        yield self
-        for child in self.children:
-            yield from child.traverse()
-
-    def __repr__(self):
-        return f"Packet(type={self.type}, value={self.value})"
-
-
-def split(string, length):  # abcdef, 2 -> ab, cdef
-    return string[:length], string[length:]
-
-
-def to_bits(hex_string):
-    return "".join(f"{int(h, 16):04b}" for h in hex_string)
-
 
 def read_packet(bits):
-    version, bits = split(bits, 3)
-    type, bits = split(bits, 3)
-
-    packet = Packet(version, type)
-
-    if type == "100":
-        packet.literal, bits = read_literal(bits)
+    packet = Packet(version=read(bits, 3), type=read(bits, 3))
+    if packet.type == "100":
+        packet.literal = read_literal(bits)
     else:
-        bits = read_operator(bits, root=packet)
-    return packet, bits
+        read_operator(bits, root=packet)
+    return packet
 
 
 def read_literal(bits):
     message = []
-    while True:
-        chunk, bits = split(bits, 5)
-        assert len(chunk) == 5, "missing/corrupted literal value?"
-        more, value = split(chunk, 1)
-        message.append(value)
-        if more == "0":
-            break
-    return int("".join(message), 2), bits
+    while read(bits, 1) == "1":
+        message.append(read(bits, 4))
+    message.append(read(bits, 4))
+    return int("".join(message), 2)
 
 
 def read_operator(bits, root):
-    mode, bits = split(bits, 1)
-    if mode == "0":
-        bit_length, bits = split(bits, 15)
-        packet_bits, bits = split(bits, int(bit_length, 2))
-        while packet_bits:  # read from packet_bits only, don't consume from bits
-            packet, packet_bits = read_packet(packet_bits)
-            root.add(packet)
+    if read(bits, 1) == "0":
+        bit_length = read(bits, 15)
+        packet_bits = read(bits, int(bit_length, 2))
+        while packet_bits:
+            # annoying, but not sure how else to do this right now
+            stream = iter(packet_bits)
+            root.add(read_packet(stream))
+            packet_bits = "".join(stream)
     else:
-        packet_length, bits = split(bits, 11)
-        for _ in range(int(packet_length, 2)):  # consume from bits
-            packet, bits = read_packet(bits)
-            root.add(packet)
-    return bits
+        packet_count = int(read(bits, 11), 2)
+        for _ in range(packet_count):
+            root.add(read_packet(bits))
 
 
-def version_sum(root):
-    return sum(int(packet.version, 2) for packet in root.traverse())
+root = read_packet(input())
 
-
-examples = {
-    "literal 2021": "D2FE28",
-    "operator(10,20)": "38006F45291200",
-    "operator(1,2,3)": "EE00D40C823060",
-    "version sum 16": "8A004A801A8002F478",
-    "version sum 12": "620080001611562C8802118E34",
-    "version sum 23": "C0015000016115A2E0802F182340",
-    "version sum 31": "A0016C880162017C3686B18A3D4780",
-    "value 3": "C200B40A82",
-    "value 54": "04005AC33890",
-    "value 7": "880086C3E88112",
-    "value 9": "CE00C43D881120",
-    "value 1": "D8005AC2A8F0",
-    "value 0": "F600BC2D8F",
-    "also 0": "9C005AC2F8F0",
-    "also 1": "9C0141080250320F1802104A08",
-}
-
-# for title, hex_string in examples.items():
-#     bits = to_bits(hex_string)
-#     print("starting example", title, hex_string, bits)
-#     packet, leftover = read_packet(bits)
-#     print("sum:", version_sum(packet), "value:", packet.value, "leftover:", leftover)
-
-
-root, leftover = read_packet(to_bits(input))
-
-print("1:", version_sum(root))
+print("1:", _glob["sum"])
 print("2:", root.value)
