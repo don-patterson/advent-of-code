@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+[ "$2" ] || set -- $(date +"%Y %d")
+touch "$1"/{day-$2.py,input-$2.txt}
