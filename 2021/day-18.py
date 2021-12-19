@@ -24,7 +24,7 @@ class Node:
             return self.value
         return 3 * self.left.magnitude + 2 * self.right.magnitude
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         if self.value is not None:
             return str(self.value)
         return f"[{self.left},{self.right}]"
@@ -106,38 +106,20 @@ def split(tree):
 
 
 def reduce(tree):
-    while explode(tree):
-        pass
-    if split(tree):
-        reduce(tree)
+    while True:
+        if explode(tree):
+            continue
+        if split(tree):
+            continue
+        return tree
 
 
-# examples = [
-#     "[[[0,1],[2,[3,4]]],4]",
-#     "[[[[[9,8],1],2],3],4]",
-#     "[[6,[5,[4,[3,2]]]],1]",
-#     "[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]",
-# ]
-
-# for e in examples:
-#     tree = parse(e)
-#     print("parsed", tree)
-#     print(explode(tree), tree)
-# tree = parse("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]")
-# reduce(tree)
 left = parse(input[0])
 for right in input[1:]:
-    node = Node(left=left, right=parse(right))
-    reduce(node)
-    left = node
+    left = reduce(Node(left=left, right=parse(right)))
 print("1:", left.magnitude)
-max_so_far = -9999
-for a, b in permutations(input, 2):
-    s = Node(left=parse(a), right=parse(b))
-    reduce(s)
-    m = s.magnitude
-    if m > max_so_far:
-        print("new record:", m, a, b)
-        max_so_far = m
 
-print("2:", max_so_far)
+m = -9999
+for a, b in permutations(input, 2):
+    m = max(m, reduce(Node(parse(a), parse(b))).magnitude)
+print("2:", m)
