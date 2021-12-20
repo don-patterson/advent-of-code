@@ -50,9 +50,10 @@ def add(v1, v2):
 
 
 class Scanner:
-    def __init__(self, id, points=None):
+    def __init__(self, id, points=None, origin=(0, 0, 0)):
         self.id = id
         self.points = points or []
+        self.origin = origin
 
     def coords(self, d):
         i = ["x", "y", "z"].index(d)
@@ -65,14 +66,7 @@ class Scanner:
         return Scanner(self.id, [rotation(p) for p in self.points])
 
     def translate(self, q):
-        return Scanner(self.id, [add(p, q) for p in self.points])
-
-    def info(self):
-        print(f"Scanner {self.id} has {len(self.points)} points", self.count("x"))
-
-    def __repr__(self) -> str:
-        return f"S({self.id})"
-        # return f"S[{self.id}:{self.first}...{self.last}]"
+        return Scanner(self.id, [add(p, q) for p in self.points], origin=q)
 
 
 scanners = []
@@ -124,55 +118,6 @@ def find_aligned(s0, s1):
     return None
 
 
-# for s0, s1 in combinations(scanners, 2):
-#     if find_aligned(s0, s1) is not None:
-#         print(s0.id, s1.id, "intersect")
-# 0 2 intersect
-# 0 24 intersect
-# 0 27 intersect
-# 1 15 intersect
-# 1 27 intersect
-# 1 32 intersect
-# 1 36 intersect
-# 2 18 intersect
-# 3 6 intersect
-# 3 19 intersect
-# 3 20 intersect
-# 3 32 intersect
-# 4 11 intersect
-# 4 12 intersect
-# 4 27 intersect
-# 5 13 intersect
-# 6 9 intersect
-# 6 34 intersect
-# 6 35 intersect
-# 7 18 intersect
-# 8 12 intersect
-# 9 13 intersect
-# 9 17 intersect
-# 9 20 intersect
-# 10 15 intersect
-# 10 23 intersect
-# 12 30 intersect
-# 13 21 intersect
-# 14 25 intersect
-# 14 28 intersect
-# 15 26 intersect
-# 16 29 intersect
-# 16 33 intersect
-# 16 36 intersect
-# 17 34 intersect
-# 18 23 intersect
-# 19 35 intersect
-# 22 33 intersect
-# 23 26 intersect
-# 24 31 intersect
-# 25 29 intersect
-# 26 27 intersect
-# 28 29 intersect
-# 28 36 intersect
-
-
 aligned = [scanners[0]]
 remaining = scanners[1:]
 
@@ -191,5 +136,10 @@ while remaining:
             remaining.remove(r)
             aligned.append(new_r)
 
-print("aligned!", aligned)
+
+def dist(p, q):
+    return sum(abs(a - b) for a, b in zip(p, q))
+
+
 print("1:", len(set.union(*[set(a.points) for a in aligned])))
+print("2:", max(dist(s0.origin, s1.origin) for s0, s1 in combinations(aligned, 2)))
