@@ -29,7 +29,9 @@ class ALU:
             func, var, *args = instruction.split()
             arg = args[0] if args else 0
             self.operate(func, var, self._int_or_attr(arg))
-            # print(f"{instruction} -> {self.state}")
+            if func == "inp":
+                print()
+            print(f"{instruction} -> {self.state}")
         # print()
         return (self.w, self.x, self.y, self.z)
 
@@ -71,9 +73,12 @@ def split(n):
         yield int(digit)
 
 
-print(validator(*split(99996919281931)))
+# Did it by hand, kept track of the growth and found you had to get these:
+small = 17241911811915
+large = 59996912981939
 
-# thought I found 99996919281931 to work by calculating them by hand...must have missed somewhere
+print(validator(*split(small), state=(0, 0, 0, 0)))
+print(validator(*split(large), state=(0, 0, 0, 0)))
 
 sys.exit()
 # the following didn't work!

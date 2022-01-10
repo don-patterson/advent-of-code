@@ -1,62 +1,78 @@
-12: down
-inp w       
-mul x 0       
-add x z       
-mod x 26       
-div z 26       
-add x -9 x=z10mod16 - 9 = w10+11 - 9 = w10+2
-eql x w       
-eql x 0       
-mul y 0       
-add y 25       
-mul y x       
-add y 1       
-mul z y       
-mul y 0       
-add y w       
-add y 4       
-mul y x       
-add z y       
-       
-13: down
-inp w       
-mul x 0       
-add x z       
-mod x 26       
-div z 26       
-add x -12  z = z11mod26 - 12 = w11+4 - 12 = w11-8
-eql x w       
-eql x 0       
-mul y 0       
-add y 25       
-mul y x       
-add y 1       
-mul z y       
-mul y 0       
-add y w       
-add y 6       
-mul y x       
-add z y       
+Calculating these by hand:
+
+z0 = w0 + 16
+z1 = t*z0 + w1 + 3
+z2 = t*z1 + w2 + 2
+z3 = t*z2 + w3 + 7
+z4a: (w4 == w3-3)  z4 = z2
+z4b: (w4 != w3-3)  z4 = t*z2 + w4 + 13
+z5 = t*z4 + w5 + 6
+z6a: (w6 == w5-8)  z6 = z4
+z6b: (w6 != w5-8)  z6 = t*z4 + w6 + 10
+z7 = t*z6 + w7 + 11
+z8a: (w8 == w7+7)  z8 = z6
+z8b: (w8 != w7+7)  z8 = t*z6 + w8 + 6
+z9: has many branches
+     z9 = z6            if (...)
+     z9 = t*z6 + w9 + 5 otherwise
+z10 = t*z9 + w10 + 11
+z11a: (w11 == w10+8)  z11 = z9
+z11b: (w11 != w10+8)  z11 = t*z9 + w11 + 4
+z12 has many branches, z /= 26
+z13 has many branches, z /= 26
 
 
+let's count the possible factors of 26:
+ z0: 0
+ z1: 1
+ z2: 2
+ z3: 3
+ z4: 2,3
+ z5: 3,4
+ z6: 2,3,4
+ z7: 3,4,5
+ z8: 2,3,4,5
+ z9: 2,3,4,5
+ 10: 3,4,5,6
+ 11: 2,3,4,5,6
+ 12: 1,2,3,4,5,6
+ 13: 0,1,2,3,4,5,6
 
-tally:
-  0:  up: w+16
-  1:  up: w+3
-  2:  up: w+2
-  3:  up: w+7
-  4:  up: w+13   down: when w=prev-3
-  5:  up: w+6
-  6:  up: w+10   down: when w=prev-8
-  7:  up: w+11
-  8:  up: w+6    down: when w=prev-7
-  9:  up: w+5    down: when w=w6+7
-  10: up: w+11
-  11: up: w+4    down: when w=prev+8
-  12:            down: when w=w10+2
-  13:            down: when w=w11-8
 
-               01234567890123
-so far best is 99996919281931
+ so...you _do_ have to take the "down" option every time
 
-damn, 99996919281931 is too high!
+ ok so that makes it easier to figure out the "history"
+
+ let's recalculate that
+
+z0 = w0 + 16
+z1 = t*z0 + w1 + 3
+z2 = t*z1 + w2 + 2
+z3 = t*z2 + w3 + 7
+z4 (w4 == w3-3)  z4 = z2
+z5 = t*z4 + w5 + 6
+z6 (w6 == w5-8)  z6 = z4 = z2
+z7 = t*z6 + w7 + 11
+z8 (w8 == w7+7)  z8 = z6 = z2
+z9 (w9 == w2-1)  z9=z1
+z10 =  t*z9 + w10 + 11
+z11: (w11 == w10+8)  z11 = z9 = z1
+z12: (w12 == w1-6)   z12 = z0
+z13: (w13 == w0+4)   z13 = 0
+
+constraints:
+  w4 = w3 - 3         w3 >= 4
+  w6 = w5 - 8         w5=9, w6=1
+  w8 = w7 + 7         w7 <= 2
+  w9 = w2 - 1         w2 >= 2
+  w11 = w10 + 8       w10=1, w11=9
+  w12 = w1 - 6        w1 >= 7
+  w13 = w0 + 4        w0 <= 5
+
+Largest:
+  01234567890123
+  59996912981939
+
+Smallest:
+  01234567890123
+  17241911811915
