@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+[ "$2" ] || { echo >&2 "usage: ./setup YYYY DD"; exit 1; }
+YYYY=$1
+DD=$2
+mkdir -p "$YYYY/input"
+cd "$YYYY"
+[ -f "input/$DD.txt" ] && { echo >&2 "looks like this was already downloaded"; exit 1; }
+
+cat >day-$DD.py <<EOF
+with open("input/$DD.txt") as f:
+    input = f.readlines()
+EOF
+
+d=$(sed s/^0// <<< "$DD")
+
+curl -sS --cookie $(<~/secrets/advent) https://adventofcode.com/$YYYY/day/$d/input >input/$DD.txt

@@ -1,22 +1,6 @@
 #!/usr/bin/env bash
-function goto_year {
-  [ "$1" ] || set -- $(ls -d 20??|tail -n1)
-  cd "$1"
-}
-
-function get_file {
-  [ "$1" ] || set -- ".."
-  ls *.py | grep "day-$1\.py"| tail -n1
-}
-
-case "$1_$2" in
-        _) goto_year;      f=$(get_file)      ;;
-      ??_) goto_year;      f=$(get_file "$1") ;;
-    20??_) goto_year "$1"; f=$(get_file)      ;;
-  20??_??) goto_year "$1"; f=$(get_file "$2") ;;
-        *) echo >&2 "...got [$1 $2]!"; exit 1 ;;
-esac
-
-
+[ "$1" ] || { echo >&2 "usage: ./run YYYY [DD]"; exit 1; }
+cd "$1"
+f=$(ls *.py | grep "day-${2:-..}\.py"| tail -n1)
 echo "$f"
 poetry run python "$f"
