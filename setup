@@ -7,7 +7,7 @@ DD=$2
 mkdir -p "$YYYY/input"
 cat >$YYYY/day-$DD.py <<EOF
 with open("input/$DD.txt") as f:
-    input = f.readlines()
+    input = f.read()
 EOF
 
 d=$(sed s/^0// <<< "$DD")
