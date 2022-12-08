@@ -16,19 +16,11 @@ def ray(start, direction):
         yield x, y
 
 
-known_visible = set()
+def visible(start):
+    return any(all(grid[p] < grid[start] for p in ray(start, d)) for d in directions)
 
 
-def is_visible(start):
-    visible = start in known_visible or any(
-        all(grid[p] < grid[start] for p in ray(start, d)) for d in directions
-    )
-    if visible:
-        known_visible.add(start)
-    return visible
-
-
-print("1:", sum(1 for p in grid if is_visible(p)))
+print("1:", sum(1 for p in grid if visible(p)))
 
 
 def view(start, direction):
