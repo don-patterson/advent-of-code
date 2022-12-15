@@ -11,4 +11,4 @@ with open("input/$DD.txt") as f:
 EOF
 
 d=$(sed s/^0// <<< "$DD")
-curl -sS --cookie $(<~/secrets/advent) https://adventofcode.com/$YYYY/day/$d/input >$YYYY/input/$DD.txt
+curl -sS --cookie $(<~/secrets/advent) https://adventofcode.com/$YYYY/day/$d/input >$YYYY/input/$DD.txt && chmod a-w $YYYY/input/$DD.txt
