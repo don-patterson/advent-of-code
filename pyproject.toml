@@ -7,6 +7,9 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+networkx = "^2.8.8"
+matplotlib = "^3.6.2"
+pyqt5 = "^5.15.7"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"
