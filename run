@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-[ "$1" ] || { echo >&2 "usage: ./run YYYY [DD]"; exit 1; }
-cd "$1"
-f=$(ls *.py | grep "day-${2:-..}\.py"| tail -n1)
-echo "$f"
-poetry run python "$f"
