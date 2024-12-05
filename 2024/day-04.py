@@ -13,7 +13,7 @@ def word(p, v):
     w = ""
     for i in [0, 1,2,3]:
         w += grid.get((p[0] + i*v[0], p[1] + i*v[1]), "_")
-    return "".join(w)
+    return w
 
 print("1:", sum(1 for p in grid for v in vec if word(p,v) == "XMAS"))
 
